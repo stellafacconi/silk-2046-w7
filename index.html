@@ -1,0 +1,539 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="utf-8">
+<title>2046 Sericulture</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one continuous black canvas. Titles alone tell the pitch. A globe opens the story and zooms to Como;
+   a tapering macro→micro spiral then moves between positions (focus, side, mini, hidden). Arial only; accent dark grey. */
+:root{
+  --bg:#000; --fg:#f2f2f0; --mute:#8c8c88; --dim:#3a3a3a; --chip:#2b2b2b;
+  --sans:Arial, "Helvetica Neue", Helvetica, "Liberation Sans", sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:#000;color:var(--fg);overflow:hidden;font-family:var(--sans);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box}
+*{box-sizing:border-box}
+#stage{position:fixed;left:50%;top:calc(50% - 18px);width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--s,.5));overflow:hidden;background:var(--bg)}
+h1,h2,p,figure{margin:0;font-weight:400}
+a{color:inherit;text-underline-offset:2px}
+svg text{font-family:var(--sans)}
+
+.lab{font:700 15px/1.1 var(--sans);text-transform:uppercase;letter-spacing:.01em}
+.mute{color:var(--mute)}
+.corner{position:absolute;z-index:20;mix-blend-mode:difference;color:#f2f2f0;font:700 15px/1.1 var(--sans);text-transform:uppercase}
+.corner.tl{left:36px;top:34px}.corner.tr{right:36px;top:34px;text-align:right}
+.corner.br{right:36px;bottom:34px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* steps */
+.step{position:absolute;left:64px;top:110px;bottom:110px;width:690px;display:flex;flex-direction:column;justify-content:center;gap:22px;z-index:4;
+  opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
+.step.wide{width:1472px}
+.step.on{opacity:1;visibility:visible;transition:opacity .6s ease .15s,visibility 0s}
+.step.on .in{animation:rise .9s cubic-bezier(.16,.8,.22,1) both;animation-delay:calc(var(--d,0) * 1ms)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.big{font:400 58px/1.02 var(--sans);letter-spacing:-.04em;text-wrap:balance}
+.huge{font:400 104px/.94 var(--sans);letter-spacing:-.055em;text-wrap:balance}
+.sub{font:400 21px/1.32 var(--sans);letter-spacing:-.01em;color:var(--mute);max-width:620px}
+.sub b{color:var(--fg);font-weight:400}
+.small{font:400 15px/1.45 var(--sans);color:var(--mute);max-width:600px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:700 13px/1 var(--sans);text-transform:uppercase;padding:9px 12px;background:var(--chip);color:var(--fg)}
+.chip.o{background:transparent;outline:2px solid var(--dim);outline-offset:-2px;color:var(--mute)}
+.ph{position:relative;overflow:hidden;background:#111;flex:none}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.4)}
+.step.on .ph{animation:reveal 1.2s cubic-bezier(.7,0,.2,1) both;animation-delay:calc(var(--d,0) * 1ms)}
+.step.on .ph img{animation:kb 14s cubic-bezier(.2,.6,.3,1) both}
+@keyframes reveal{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+@keyframes kb{from{transform:scale(1.12)}to{transform:scale(1)}}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:690px}
+.pair div{height:150px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;background:var(--chip)}
+.pair div.on{background:var(--fg);color:#000}
+.r{position:absolute;display:grid;grid-template-columns:54px auto}
+.r .n{font:700 15px/1.1 var(--sans)}
+.agent{font:400 46px/1 var(--sans);letter-spacing:-.035em}
+
+/* illustrations */
+.ill text{font:700 13px var(--sans);text-transform:uppercase;fill:var(--mute)}
+.ill .w{fill:var(--fg)}
+.ill .n{font-weight:400;text-transform:none;font-size:15px}
+.ill .h{font-size:15px;fill:var(--fg)}
+.ill .k{fill:#000}
+.draw{stroke-dasharray:1;stroke-dashoffset:0}
+.step.on .draw{animation:draw var(--dur,1600ms) cubic-bezier(.45,.05,.25,1) both;animation-delay:calc(var(--d,0) * 1ms)}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.step.on .fadein{animation:fade 1s ease both;animation-delay:calc(var(--d,0) * 1ms)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.step.on .growy{transform-box:fill-box;transform-origin:bottom;animation:growy 1.4s cubic-bezier(.6,0,.2,1) both;animation-delay:calc(var(--d,0) * 1ms)}
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.step.on .growx{transform-box:fill-box;transform-origin:left;animation:growx 1.4s cubic-bezier(.6,0,.2,1) both;animation-delay:calc(var(--d,0) * 1ms)}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.step.on .popin{transform-box:fill-box;transform-origin:center;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--d,0) * 1ms)}
+@keyframes pop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+
+/* globe */
+#globe{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .8s ease}
+#globe.on{opacity:1}
+#globe .arcs{opacity:0;transition:opacity 1.2s ease}
+#globe.ai .arcs,#globe.omni .arcs{opacity:1}
+#globe.omni .arcs path{stroke-dasharray:4 10;animation:flow 1.1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-14}}
+#globe .hubs{opacity:0;transition:opacity 1s ease}
+#globe.omni .hubs{opacity:1}
+#globe-fade{position:absolute;left:0;top:0;bottom:0;width:900px;z-index:2;background:linear-gradient(90deg,#000 45%,transparent);opacity:0;transition:opacity .8s ease;pointer-events:none}
+#globe-fade.on{opacity:1}
+
+/* spiral */
+#dia{position:absolute;inset:0;z-index:3;pointer-events:none;transform-origin:1200px 460px;
+  transition:opacity .9s ease,transform 1.4s cubic-bezier(.6,0,.2,1)}
+#dia.away{opacity:0}
+#dia.focus{transform:translateX(-90px) scale(1.04)}
+#dia text{font:700 13px var(--sans);text-transform:uppercase;fill:var(--dim);transition:fill .8s ease,opacity .6s ease}
+#dia text .ag{font-weight:400;text-transform:none;font-size:14px}
+#dia text.seen{fill:var(--mute)}#dia text.cur{fill:var(--fg)}
+#dia .scale{fill:var(--mute)}
+#trace{transition:stroke-dashoffset 1.8s cubic-bezier(.6,0,.2,1)}
+#cursor{transition:transform 1.8s cubic-bezier(.6,0,.2,1),opacity .6s ease}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.8);opacity:0}}
+
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:18px;
+  padding:8px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  font:700 12px/1 var(--sans);color:#8c8c88}
+#nav button{all:unset;cursor:pointer;padding:6px 11px;border:1.5px solid #3a3a3a;color:#f2f2f0}
+#nav button:hover{border-color:#f2f2f0}
+#nav button:focus-visible{outline:2px solid #f2f2f0;outline-offset:2px}
+.ill .nm{font:400 26px var(--sans);text-transform:none;letter-spacing:-.02em}
+#bar{position:fixed;left:0;bottom:0;height:2px;background:#f2f2f0;transition:width .6s ease;width:0}
+#count{min-width:72px;text-align:center;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div id="stage" lang="en">
+  <div class="corner tl">2046<br>Sericulture</div>
+  <div class="corner tr">Group 07<br>FDS2</div>
+  <div class="corner br" id="cbr"></div>
+
+  <svg id="globe" viewBox="0 0 1600 900" width="1600" height="900" aria-hidden="true"></svg>
+  <div id="globe-fade"></div>
+
+  <figure class="ph" id="coverimg" style="position:absolute;left:920px;top:0;right:0;bottom:0;z-index:1;opacity:0;transition:opacity 1s ease;background:#000;display:grid;place-items:center"><img src="img/moth-cover.jpg" alt="A white moth reflected on a black surface" style="width:680px;height:680px;object-fit:contain;filter:grayscale(1)"></figure>
+  <!-- 1, cover -->
+  <section class="step" style="width:820px">
+    <div class="lab in">What if</div>
+    <h1 class="huge in" style="--d:100;font-size:96px;line-height:.94">the silkworm gave the orders?</h1>
+    <div class="lab mute in" style="--d:300">2046 Sericulture, a speculative pitch by Group 07</div>
+  </section>
+
+  <!-- 2, collapse -->
+  <section class="step">
+    <div class="lab mute in">The world, 2046</div>
+    <h2 class="big in" style="--d:100">The global economic system is on the brink of collapse.</h2>
+    <p class="sub in" style="--d:250">The cause: <b>rampant exploitation of the planet’s resources, in the name of an unlimited economy.</b></p>
+  </section>
+
+  <!-- 3, delegation -->
+  <section class="step">
+    <div class="lab mute in">The world, 2046</div>
+    <h2 class="big in" style="--d:100">Political organizations delegate their powers to AI.</h2>
+    <p class="sub in" style="--d:250">Its task: <b>optimise resource use and rebuild the economy sustainably, in the long term.</b></p>
+  </section>
+
+  <!-- 4, omniscient -->
+  <section class="step">
+    <div class="lab mute in">The world, 2046</div>
+    <h2 class="big in" style="--d:100">The AI is omniscient.</h2>
+    <p class="sub in" style="--d:250">It monitors the production lines of every sector, <b>and gives each one the directives to follow.</b></p>
+  </section>
+
+  <!-- 5, place -->
+  <section class="step">
+    <div class="lab mute in">Where</div>
+    <h2 class="big in" style="--d:100">Our story starts in Lombardy, Italy’s historic silk valley.</h2>
+  </section>
+
+  <!-- 6, spiral -->
+  <section class="step" style="width:520px">
+    <div class="lab mute in">How to read this pitch</div>
+    <h2 class="huge in" style="--d:100;font-size:88px">From macro to micro.</h2>
+    <p class="sub in" style="--d:250">Six phases. <b>At each one, power passes to someone smaller.</b></p>
+  </section>
+
+  <!-- 7, timeline -->
+  <section class="step wide" style="justify-content:flex-start;width:1260px">
+    <div class="lab mute in">Phase 01: Breaking point</div>
+    <h2 class="big in" style="--d:100">By 2046, twenty years from now, there will be no more energy to produce.</h2>
+    <svg class="ill" id="tl" viewBox="0 0 1260 440" width="1260" height="440"></svg>
+  </section>
+
+  <!-- 8, handover -->
+  <section class="step" style="justify-content:flex-end">
+    <figure class="ph" style="width:690px;height:300px;--d:100"><img src="img/datacenter.jpg" alt="Rows of server racks" style="object-position:50% 60%"></figure>
+    <div class="lab mute in" style="--d:150">Phase 02: Handover</div>
+    <h2 class="big in" style="--d:200">So we hand productivity to an AI with one rule: waste nothing.</h2>
+  </section>
+
+  <!-- 9a, agents -->
+  <section class="step wide" style="justify-content:flex-start">
+    <div class="lab mute in">The agents</div>
+    <h2 class="big in" style="--d:100">In the silk valley, four agents now share the factory.</h2>
+    <div class="r" style="left:300px;top:270px;--d:300" data-a><span class="n">01</span><div><div class="agent in" style="--d:300">Workers</div><div class="lab mute in" style="--d:350;margin-top:8px">Follow the silkworm’s seasons</div></div></div>
+    <div class="r" style="left:640px;top:370px" data-a><span class="n">02</span><div><div class="agent in" style="--d:450">Mulberry</div><div class="lab mute in" style="--d:500;margin-top:8px">Decides when food exists</div></div></div>
+    <div class="r" style="left:520px;top:470px" data-a><span class="n">03</span><div><div class="agent in" style="--d:600">Silkworm</div><div class="lab mute in" style="--d:650;margin-top:8px">Decides when work happens</div></div></div>
+    <div class="r" style="left:900px;top:570px" data-a><span class="n">04</span><div><div class="agent in" style="--d:750">AI</div><div class="lab mute in" style="--d:800;margin-top:8px">Watches, protects, gives directives</div></div></div>
+  </section>
+
+  <!-- 9, agent map -->
+  <section class="step wide" style="justify-content:flex-start;gap:18px">
+    <div class="lab mute in">The agents, connected</div>
+    <h2 class="big in" style="--d:100">Three live in a loop, the AI serves it.</h2>
+    <svg class="ill" id="amap" viewBox="0 0 1472 480" width="1472" height="480" style="margin-top:4px"></svg>
+  </section>
+
+  <!-- 10, mulberry -->
+  <section class="step">
+    <div class="lab mute in">Phase 03: Limit, the mulberry</div>
+    <h2 class="big in" style="--d:100">The mulberry comes back, and synthetic feed goes.</h2>
+    <div class="pair in" style="--d:250">
+      <div><span class="lab mute">Today</span><span class="lab">Synthetic feed<br><span class="mute">polluting to produce</span></span></div>
+      <div class="on"><span class="lab" style="color:#555">2046</span><span class="lab">Mulberry leaves<br><span style="color:#555">grown on the tree</span></span></div>
+    </div>
+    <p class="sub in" style="--d:350"><b>Lower cost, less pollution, and the silkworm eats on its own biological rhythm.</b></p>
+  </section>
+
+  <!-- 11, who pays -->
+  <section class="step wide" style="justify-content:flex-start;width:1260px">
+    <div class="lab mute in">Who pays for silk</div>
+    <h2 class="big in" style="--d:100;max-width:1100px">Today only the silkworm suffers, for 1 km of silk. In 2046, the cost is shared.</h2>
+    <svg class="ill" id="pays" viewBox="0 0 1260 400" width="1260" height="400"></svg>
+  </section>
+
+  <!-- 12, reversal -->
+  <section class="step">
+    <div class="lab mute in">Phase 04: Reversal, the machine</div>
+    <h2 class="big in" style="--d:100">The factory starts keeping cocoons warm.</h2>
+    <figure class="ph" style="width:690px;height:300px;--d:200"><img src="img/larvae.jpg" alt="Silkworm larvae on mulberry leaves"></figure>
+    <div class="row in" style="--d:350"><span class="chip o">Looms off</span><span class="chip">Power → warmth for the pupae</span></div>
+  </section>
+
+  <!-- 13, larva -->
+  <section class="step">
+    <div class="lab mute in">Phase 05: Turning point, the larva</div>
+    <h2 class="big in" style="--d:100">The larva is no longer boiled. It becomes a moth.</h2>
+    <svg class="ill" id="cycle" viewBox="0 0 760 400" width="690" height="363"></svg>
+  </section>
+
+  <!-- 14, flip -->
+  <section class="step wide" style="justify-content:flex-start;gap:14px">
+    <div class="lab mute in">What changes</div>
+    <h2 class="big in" style="--d:100">In the end, the chain of command is flipped.</h2>
+    <svg class="ill" viewBox="0 0 1472 560" width="1472" height="560" style="margin-top:6px">
+      <text x="300" y="40" text-anchor="end" class="h fadein" style="--d:200">TODAY</text>
+      <text x="1172" y="40" class="h fadein" style="--d:200">2046</text>
+      <text x="736" y="40" text-anchor="middle" class="fadein" style="--d:200">↑ gives the orders, follows ↓</text>
+      <g id="slope"></g>
+    </svg>
+  </section>
+
+  <!-- 15, rule + seasons -->
+  <section class="step wide" style="justify-content:flex-start;gap:14px;width:1260px">
+    <div class="lab mute in">Phase 06: New rhythm, humans</div>
+    <h2 class="big in" style="--d:100">The new rule: life sets the ceiling of the economy.</h2>
+    <svg class="ill" viewBox="0 0 1260 540" width="1260" height="540" id="rule"></svg>
+  </section>
+
+  <!-- 16, close -->
+  <section class="step wide" style="align-items:center;text-align:center">
+    <div class="lab mute in">So, who is the moth?</div>
+    <h2 class="huge in" style="--d:100;font-size:104px;max-width:1200px">The moth leaving the cocoon is us.</h2>
+    <p class="sub in" style="--d:250">Free from nonstop productivity. <b>Back inside the seasons of the living world.</b></p>
+  </section>
+
+  <figure class="ph" id="backimg" style="position:absolute;left:900px;top:0;right:0;bottom:0;z-index:1;opacity:0;transition:opacity 1s ease;background:#000;display:grid;place-items:center"><img src="img/moth-back.jpg" alt="A pale moth seen from above, wings folded" style="width:auto;height:760px;object-fit:contain;filter:grayscale(1)"></figure>
+  <!-- 17, thanks -->
+  <section class="step wide" style="justify-content:flex-end">
+    <h2 class="huge in">Thank you.</h2>
+    <div class="lab in" style="--d:150">Group 07, Digital &amp; Interaction Design, FDS2</div>
+  </section>
+
+  <svg id="dia" class="away" viewBox="0 0 1600 900" width="1600" height="900" aria-hidden="true"></svg>
+</div>
+
+<div id="bar"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const stage=document.getElementById('stage'),dia=document.getElementById('dia');
+  const steps=[...stage.querySelectorAll('.step')],N=steps.length,pad=n=>String(n).padStart(2,'0');
+  const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||dia).appendChild(e);return e};
+  const txt=(p,x,y,s,cls,extra)=>{const t=el('text',Object.assign({x,y},cls?{class:cls}:{},extra||{}),p);t.textContent=s;return t};
+
+  /* ——— spiral: wide at top (macro), tight at bottom (micro) ——— */
+  const cx=1200,top=200,bot=720,R0=250,R1=34,turns=2.5;
+  const P=t=>{const th=Math.PI+turns*2*Math.PI*t,R=R0+(R1-R0)*t,ry=44+(10-44)*t;return[cx+R*Math.cos(th),top+(bot-top)*t+ry*Math.sin(th)]};
+  const n=900,pts=[],cum=[0];
+  for(let i=0;i<=n;i++){pts.push(P(i/n));if(i)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]))}
+  const frac=t=>cum[Math.round(t*n)]/cum[n];
+  const d='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L');
+  el('line',{x1:cx,y1:top-60,x2:cx,y2:bot+60,stroke:'#262626','stroke-width':1,'stroke-dasharray':'3 6'});
+  el('path',{d:`M${cx-7} ${bot+48} L${cx} ${bot+62} L${cx+7} ${bot+48}`,fill:'none',stroke:'#3a3a3a','stroke-width':1});
+  txt(dia,cx,top-80,'Macro, the planet','scale',{'text-anchor':'middle'});
+  txt(dia,cx,bot+88,'Micro, one larva','scale',{'text-anchor':'middle'});
+  el('path',{d,fill:'none',stroke:'#3a3a3a','stroke-width':1.2});
+  const trace=el('path',{d,fill:'none',stroke:'#f2f2f0','stroke-width':1.8,pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1,id:'trace'});
+  const phases=[['Breaking point','the planet'],['Handover','the AI'],['Limit','the mulberry'],['Reversal','the machine'],['Turning point','the larva'],['New rhythm','humans']];
+  const nodes=phases.map(([ph,ag],i)=>{const t=i/5,[x,y]=P(t),left=x<cx;
+    const c=el('circle',{cx:x,cy:y,r:4,fill:'#3a3a3a'});
+    const tx=el('text',{x:left?x-16:x+16,y:y-2,'text-anchor':left?'end':'start'});
+    const a=document.createElementNS(NS,'tspan');a.textContent=`0${i+1} ${ph}`;tx.appendChild(a);
+    const b=document.createElementNS(NS,'tspan');b.setAttribute('x',left?x-16:x+16);b.setAttribute('dy','17');b.setAttribute('class','ag');b.textContent=`Agent: ${ag}`;tx.appendChild(b);
+    return{x,y,c,tx}});
+  const cur=el('g',{id:'cursor'});
+  el('circle',{cx:0,cy:0,r:10,fill:'none',stroke:'#f2f2f0','stroke-width':1,class:'pulse'},cur);
+  el('circle',{cx:0,cy:0,r:8,fill:'#f2f2f0'},cur);
+
+  /* per step: [spiral mode, active node, progress node, globe mode] */
+  const S=[
+    ['away',-1,-1,'off'],['away',-1,-1,'world'],['away',-1,-1,'ai'],['away',-1,-1,'omni'],['away',-1,-1,'zoom'],
+    ['focus',-1,-1,'off'],['away',0,0,'off'],['side',1,1,'off'],['away',1,1,'off'],['away',1,1,'off'],['side',2,2,'off'],
+    ['away',2,2,'off'],['side',3,3,'off'],['side',4,4,'off'],['away',4,4,'off'],['away',5,5,'off'],
+    ['away',5,5,'off'],['away',5,5,'off']];
+  function paintSpiral(k){
+    const [mode,act,prog]=S[k];
+    dia.setAttribute('class',mode);
+    trace.setAttribute('stroke-dashoffset',prog<0?1:(1-frac(prog/5)).toFixed(4));
+    nodes.forEach((nd,i)=>{const seen=prog>=0&&i<=prog;
+      nd.c.setAttribute('fill',seen||mode==='focus'?'#f2f2f0':'#3a3a3a');nd.c.setAttribute('r',seen?5:4);
+      nd.tx.setAttribute('class',i===act?'cur':(seen||mode==='focus'?'seen':''))});
+    if(act>=0){cur.style.transform=`translate(${nodes[act].x}px,${nodes[act].y}px)`;cur.style.opacity=1}else cur.style.opacity=0;
+  }
+
+  /* ——— globe: world → AI network → zoom to Como ——— */
+  const gsvg=document.getElementById('globe'),gfade=document.getElementById('globe-fade');
+  const COMO=[9.39,45.86];
+  let G=null;
+  if(window.d3&&window.topojson){
+    fetch('data/countries-50m.json').then(r=>r.json()).then(t=>{
+      const countries=topojson.feature(t,t.objects.countries).features;
+      const g=d3.select(gsvg);
+      const proj=d3.geoOrthographic().translate([1150,470]).clipAngle(90).precision(.3);
+      const path=d3.geoPath(proj);
+      const sphere=g.append('path').datum({type:'Sphere'}).attr('fill','#080808').attr('stroke','#3a3a3a');
+      const grat=g.append('path').datum(d3.geoGraticule10()).attr('fill','none').attr('stroke','#1a1a1a');
+      const cs=g.append('g').selectAll('path').data(countries).join('path')
+        .attr('fill',d=>d.id==='380'?'#262626':'#121212').attr('stroke',d=>d.id==='380'?'#8c8c88':'#3a3a3a').attr('stroke-width',d=>d.id==='380'?1:.6);
+      const C={ny:[-74,40.7],sp:[-46.6,-23.5],la:[-118.2,34],mx:[-99.1,19.4],lo:[-.1,51.5],mi:[9.19,45.46],mo:[37.6,55.7],ca:[31.2,30],lg:[3.4,6.5],jb:[28,-26.2],mu:[72.8,19],bj:[116.4,39.9],tk:[139.7,35.7],sy:[151.2,-33.9],sg:[103.8,1.35]};
+      const L=[['ny','lo'],['ny','sp'],['la','tk'],['la','ny'],['mx','sp'],['lo','mi'],['mi','mo'],['mi','ca'],['ca','lg'],['lg','jb'],['ca','mu'],['mo','bj'],['mu','sg'],['bj','tk'],['sg','sy'],['lo','ny'],['mi','mu'],['jb','sy'],['mo','mi']];
+      const arcs=g.append('g').attr('class','arcs').selectAll('path').data(L.map(([a,b])=>({type:'LineString',coordinates:[C[a],C[b]]}))).join('path')
+        .attr('fill','none').attr('stroke','#f2f2f0').attr('stroke-width',1).attr('opacity',.7);
+      const hubs=g.append('g').attr('class','hubs').selectAll('circle').data(Object.values(C)).join('circle').attr('r',3.5).attr('fill','#f2f2f0');
+      const pin=g.append('g').attr('opacity',0);
+      pin.append('circle').attr('r',22).attr('fill','none').attr('stroke','#f2f2f0').attr('class','pulse');
+      pin.append('circle').attr('r',7).attr('fill','#f2f2f0');
+      pin.append('text').attr('x',20).attr('y',-14).attr('fill','#f2f2f0').style('font','700 15px Arial').style('text-transform','uppercase').text('Como-Lecco');
+      pin.append('text').attr('x',20).attr('y',6).attr('fill','#8c8c88').style('font','400 15px Arial').text('45.86° N, 9.39° E');
+      let rot=[-10,-20],scale=300,tw=null,spin=false,last=0,timer=null;
+      function render(){
+        proj.rotate(rot).scale(scale);
+        sphere.attr('d',path);grat.attr('d',path);cs.attr('d',path);arcs.attr('d',path);
+        hubs.attr('transform',d=>{const p=proj(d),vis=d3.geoDistance(d,[-rot[0],-rot[1]])<Math.PI/2;return vis?`translate(${p})`:'translate(-99,-99)'});
+        const [x,y]=proj(COMO);pin.attr('transform',`translate(${x},${y})`).attr('opacity',scale>4500?Math.min(1,(scale-4500)/1500):0);
+      }
+      function tick(now){
+        const dt=last?now-last:0;last=now;
+        if(tw){const p=Math.min(1,(now-tw.t0)/tw.dur),e=d3.easeCubicInOut(p);
+          rot=[tw.r0[0]+(tw.r1[0]-tw.r0[0])*e,tw.r0[1]+(tw.r1[1]-tw.r0[1])*e];scale=tw.s0*Math.pow(tw.s1/tw.s0,e);if(p>=1)tw=null}
+        else if(spin)rot=[rot[0]+dt*.008,rot[1]];
+        render();
+      }
+      G={set(mode){
+        gsvg.setAttribute('class',mode==='off'?'':'on '+mode);gfade.classList.toggle('on',mode!=='off');
+        if(mode==='off'){if(timer){timer.stop();timer=null}return}
+        const now=performance.now();
+        if(mode==='zoom'){spin=false;tw={r0:[...rot],r1:[-COMO[0],-COMO[1]],s0:scale,s1:6600,t0:now,dur:2200}}
+        else{spin=true;if(scale>301)tw={r0:[...rot],r1:[rot[0]-40,-20],s0:scale,s1:300,t0:now,dur:2200}}
+        if(!timer){last=0;timer=d3.timer((e)=>tick(performance.now()))}
+      }};
+      render();
+      if(k>=0)G.set(S[k][3]);
+    }).catch(()=>{});
+  }
+
+  /* ——— timeline 2026 → 2046 ——— */
+  const tl=document.getElementById('tl');
+  {
+    const x0=40,x1=1180,ly=230,yx=y=>x0+(x1-x0)*(y-2026)/20,T=3600;
+    el('line',{x1:x0,y1:ly,x2:x1,y2:ly,stroke:'#3a3a3a','stroke-width':1},tl);
+    el('line',{x1:x0,y1:ly,x2:x1,y2:ly,stroke:'#f2f2f0','stroke-width':2,pathLength:1,class:'draw',style:`--dur:${T}ms;--d:400`},tl);
+    for(let y=2026;y<=2046;y++){const x=yx(y),maj=(y-2026)%5===0;
+      el('line',{x1:x,y1:ly-(maj?10:5),x2:x,y2:ly+(maj?10:5),stroke:'#5a5a58','stroke-width':1},tl);
+      if(maj)txt(tl,x,ly+34,y,'',{'text-anchor':'middle'})}
+    const ev=[[2026,'Today','Silk is made by boiling larvae,','with heat running 24/7.',-1],
+              [2032,'Synthetic fibre','becomes too expensive to make.','',1],
+              [2038,'Climate','Industrial farming in Lombardy fails.','',-1],
+              [2043,'Production','starts to be rationed.','',1],
+              [2046,'No energy','left to produce.','',-1]];
+    ev.forEach(([y,a,b,c,side])=>{const x=yx(y),dl=400+T*(y-2026)/20,up=side<0,yy=up?ly-60:ly+80;
+      el('line',{x1:x,y1:ly,x2:x,y2:up?ly-46:ly+50,stroke:'#f2f2f0','stroke-width':1,class:'fadein',style:`--d:${dl}`},tl);
+      el('circle',{cx:x,cy:ly,r:y===2046?9:6,fill:'#f2f2f0',class:'popin',style:`--d:${dl}`},tl);
+      const anchor=y===2046?'end':'start',xx=y===2046?x+4:x-4;
+      const g=el('g',{class:'fadein',style:`--d:${dl+100}`},tl);
+      txt(g,xx,up?yy-38:yy,`${y}, ${a}`,'h',{'text-anchor':anchor});
+      txt(g,xx,up?yy-18:yy+20,b,'n',{'text-anchor':anchor});
+      if(c)txt(g,xx,up?yy+2:yy+40,c,'n',{'text-anchor':anchor});
+    });
+    txt(tl,x0,430,'Speculative scenario','',{});
+  }
+
+  /* ——— who pays: share of the cost of 1 km of silk ——— */
+  const py=document.getElementById('pays');
+  {
+    const X0=200,W=900,rows=[['Today',[['Silkworm, boiled alive',100]]],['2046',[['Silkworm, lives, shorter thread',50],['Humans, rest, less output',50]]]];
+    txt(py,X0,40,'Who carries the cost of 1 km of silk','',{});
+    rows.forEach(([lab,parts],i)=>{const y=80+i*140;let x=X0;
+      txt(py,X0-24,y+44,lab,'h',{'text-anchor':'end'});
+      parts.forEach(([nm,v],j)=>{const w=W*v/100,fill=j===0?'#f2f2f0':'#2b2b2b';
+        el('rect',{x,y,width:w-(j<parts.length-1?4:0),height:80,fill,class:'growx',style:`--d:${400+i*600+j*300}`},py);
+        txt(py,x+16,y+46,nm,j===0?'k':'w',{class:(j===0?'k':'w')+' fadein',style:`--d:${900+i*600+j*300}`});
+        txt(py,x+w-16,y+46,v+'%',j===0?'k':'w',{'text-anchor':'end',class:(j===0?'k':'w')+' fadein',style:`--d:${900+i*600+j*300}`});
+        x+=w;});
+    });
+    txt(py,X0,370,'Mutual suffering: in 2046 humans accept limits too, so the silkworm can live. Illustrative split.','n',{class:'n fadein',style:'--d:1800'});
+  }
+
+  /* ——— life cycle: cut vs closed ——— */
+  const cy=document.getElementById('cycle');
+  [['Today',false,0],['2046',true,400]].forEach(([title,closed,ox])=>{
+    const g=el('g',{transform:`translate(${ox} 0)`},cy),c=[180,200],r=120;
+    txt(g,20,30,title,'h',{});
+    const pt=a=>[c[0]+r*Math.cos(a*Math.PI/180),c[1]+r*Math.sin(a*Math.PI/180)];
+    const arc=(a0,a1)=>{const[x0,y0]=pt(a0),[x1,y1]=pt(a1);return `M${x0} ${y0} A${r} ${r} 0 0 1 ${x1} ${y1}`};
+    el('circle',{cx:c[0],cy:c[1],r,fill:'none',stroke:'#2b2b2b','stroke-width':1.2},g);
+    const id='cyc'+(closed?'b':'a');
+    if(closed){el('path',{id,d:arc(-90,90)+' '+arc(90,269.9).replace('M','L'),fill:'none',stroke:'#f2f2f0','stroke-width':1.8,pathLength:1,class:'draw',style:'--d:500;--dur:2000ms'},g)}
+    else{el('path',{id,d:arc(-90,90),fill:'none',stroke:'#f2f2f0','stroke-width':1.8,pathLength:1,class:'draw',style:'--d:500;--dur:1200ms'},g);
+      el('path',{d:arc(90,270),fill:'none',stroke:'#3a3a3a','stroke-width':1.2,'stroke-dasharray':'3 5'},g);
+      const[bx,by]=pt(90);el('path',{d:`M${bx-12} ${by-12} L${bx+12} ${by+12} M${bx+12} ${by-12} L${bx-12} ${by+12}`,stroke:'#f2f2f0','stroke-width':2.5,class:'popin',style:'--d:1700'},g);
+      txt(g,bx,by+46,'Boiled here','h',{'text-anchor':'middle',class:'h fadein',style:'--d:1800'});}
+    [['Egg',-90],['Larva',0],['Cocoon',90],['Moth',180]].forEach(([nm,a])=>{const[x,y]=pt(a),dead=!closed&&a===180;
+      if(!closed&&a===90)return;
+      el('circle',{cx:x,cy:y,r:7,fill:dead?'#000':'#f2f2f0',stroke:dead?'#3a3a3a':'none','stroke-width':1.2},g);
+      txt(g,a===0?x+16:a===180?x-16:x,a===-90?y-16:a===90?y+28:y+5,nm,dead?'':'w',{'text-anchor':a===0?'start':a===180?'end':'middle'})});
+    const dot=el('circle',{r:6,fill:'#f2f2f0'},g);
+    const am=document.createElementNS(NS,'animateMotion');am.setAttribute('dur',closed?'6s':'3s');am.setAttribute('repeatCount','indefinite');
+    const mp=document.createElementNS(NS,'mpath');mp.setAttribute('href','#'+id);am.appendChild(mp);dot.appendChild(am);
+    txt(g,20,392,closed?'Cycle closes: the moth lays new eggs.':'Cycle cut: every generation is bought.','n',{});
+  });
+
+  /* ——— slope chart ——— */
+  const sl=document.getElementById('slope');
+  {
+    const ys=[110,215,320,425];
+    const before=[['Humans','Demand nonstop output'],['Machine','Runs 24/7'],['Mulberry','Replaced by synthetic feed'],['Silkworm','Boiled alive']];
+    const after=[['Mulberry','Decides when food exists'],['Silkworm','Decides when work happens'],['AI machine','Keeps the cocoons warm'],['Workers','Work and rest with the silkworm']];
+    const map={Humans:3,Machine:2,Mulberry:0,Silkworm:1};
+    before.forEach(([nm],i)=>{const j=map[nm],up=j<i;
+      el('path',{d:`M330 ${ys[i]} C736 ${ys[i]} 736 ${ys[j]} 1142 ${ys[j]}`,fill:'none',stroke:up?'#f2f2f0':'#5a5a58','stroke-width':up?2:1.4,pathLength:1,class:'draw',style:`--d:${500+i*150}`},sl);
+      el('circle',{cx:330,cy:ys[i],r:5,fill:'#f2f2f0',class:'fadein',style:'--d:300'},sl);
+      el('circle',{cx:1142,cy:ys[j],r:5,fill:up?'#f2f2f0':'#5a5a58',class:'fadein',style:`--d:${1300+i*150}`},sl);});
+    before.forEach(([nm,note],i)=>{txt(sl,300,ys[i]-2,`${i+1}  ${nm}`,'w fadein',{'text-anchor':'end',style:'--d:300'});txt(sl,300,ys[i]+20,note,'n fadein',{'text-anchor':'end',style:'--d:300'})});
+    after.forEach(([nm,note],i)=>{txt(sl,1172,ys[i]-2,`${i+1}  ${nm}`,'w fadein',{style:`--d:${1300+i*120}`});txt(sl,1172,ys[i]+20,note,'n fadein',{style:`--d:${1300+i*120}`})});
+    txt(sl,736,520,'White line: gains control, grey line: gives it up','n fadein',{'text-anchor':'middle',style:'--d:2000'});
+  }
+
+  /* ——— rule chart: one year of factory work, with the seasons ——— */
+  const rc=document.getElementById('rule');
+  {
+    const defs=el('defs',{},rc),pat=el('pattern',{id:'hatch',width:8,height:8,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
+    el('line',{x1:0,y1:0,x2:0,y2:8,stroke:'#2a2a2a','stroke-width':2},pat);
+    const X0=110,X1=1110,Y0=330,Y1=50,mw=(X1-X0)/12,yv=v=>Y0-(Y0-Y1)*v/100;
+    const work=[0,0,30,90,100,10,0,10,90,70,0,0];
+    [0,50,100].forEach(v=>txt(rc,X0-14,yv(v)+4,v+'%','',{'text-anchor':'end'}));
+    work.forEach((v,i)=>{
+      el('rect',{x:X0+mw*i+3,y:Y1,width:mw-6,height:Y0-Y1,fill:'url(#hatch)',class:'fadein',style:'--d:1400'},rc);
+      if(v)el('rect',{x:X0+mw*i+3,y:yv(v),width:mw-6,height:Y0-yv(v),fill:'#f2f2f0',class:'growy',style:`--d:${500+i*60}`},rc);
+      txt(rc,X0+mw*(i+.5),Y0+24,'JFMAMJJASOND'[i],v?'w':'',{'text-anchor':'middle'});});
+    el('line',{x1:X0,y1:Y1,x2:X1,y2:Y1,stroke:'#8c8c88','stroke-width':1.5,'stroke-dasharray':'6 6',class:'fadein',style:'--d:300'},rc);
+    const seasons=[['Winter','Rest, diapause',11,3,false],['Spring','Work, leaf burst',2,3,true],['Summer','Rest, cocoon sleep',5,3,false],['Autumn','Work, fibre gathering',8,3,true]];
+    seasons.forEach(([s,w,start,len,work],i)=>{
+      const segs=start+len>12?[[start,12-start],[0,start+len-12]]:[[start,len]];
+      segs.forEach(([a,l],j)=>{el('rect',{x:X0+mw*a+3,y:Y0+44,width:mw*l-6,height:70,fill:work?'#f2f2f0':'#2b2b2b',class:'fadein',style:`--d:${1700+i*150}`},rc);
+        if(j===segs.length-1||l>1){if(l<2&&segs.length>1)return;
+          txt(rc,X0+mw*a+16,Y0+72,s,work?'k':'w',{class:(work?'k':'w')+' fadein',style:`--d:${1800+i*150}`});
+          txt(rc,X0+mw*a+16,Y0+94,w,work?'k n':'w n',{class:(work?'k':'w')+' n fadein',style:`--d:${1800+i*150}`});}});
+    });
+    const lab=(x,y,s,cls,dl)=>txt(rc,x,y,s,cls+' fadein',{style:`--d:${dl}`});
+    lab(X1+18,Y1+5,'Today: 24/7','h',300);lab(X1+18,Y1+24,'work ignores life','n',300);
+    lab(X1+18,yv(70),'2046: work','h',1300);lab(X1+18,yv(70)+19,'follows the silkworm','n',1300);
+    lab(X1+18,yv(25),'▨ Energy','',1600);lab(X1+18,yv(25)+19,'no longer spent','n',1600);
+    lab(X0,Y0+150,'Factory work across one year. Illustrative values.','n',2200);
+  }
+
+  /* ——— agent map: who acts on whom ——— */
+  const am=document.getElementById('amap');
+  {
+    const defs=el('defs',{},am);
+    [['mk1','#f2f2f0'],['mk2','#8c8c88']].forEach(([id,c])=>{
+      const m=el('marker',{id,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:9,markerHeight:9,orient:'auto'},defs);
+      el('path',{d:'M0 0L10 5L0 10z',fill:c},m)});
+    const cut='paint-order:stroke;stroke:#000;stroke-width:7px;stroke-linejoin:round;';
+    /* [path, label, lx, ly, anchor, live, delay] */
+    const E=[
+      ['M335 185 L631 185','decides when food exists',483,172,'middle',1,700],
+      ['M841 185 L1137 185','decides when work happens',989,172,'middle',1,1100],
+      ['M1242 147 C1242 10 230 10 230 147','tend the trees, gather the leaves',736,48,'middle',1,1500],
+      ['M714 223 L714 347','its cocoons need warmth',704,290,'end',0,2300],
+      ['M758 347 L758 223','keeps the cocoons warm',768,290,'start',0,2450],
+      ['M631 385 C430 385 230 330 230 223','protects the groves',355,344,'middle',0,2600],
+      ['M841 385 C1042 385 1242 330 1242 223','directive: waste nothing',1117,344,'middle',0,2750]];
+    E.forEach(([d,lab,lx,ly,an,live,dl])=>{
+      if(live)el('path',{d,fill:'none',stroke:'#f2f2f0','stroke-width':2,pathLength:1,'marker-end':'url(#mk1)',class:'draw',style:`--dur:900ms;--d:${dl}`},am);
+      else el('path',{d,fill:'none',stroke:'#8c8c88','stroke-width':1.4,'stroke-dasharray':'5 6','marker-end':'url(#mk2)',class:'fadein',style:`--d:${dl}`},am);
+      txt(am,lx,ly,lab,'n '+(live?'w':'')+' fadein',{'text-anchor':an,style:cut+`--d:${dl+300}`})});
+    [['Mulberry','Food',230,185,1],['Silkworm','Rhythm',736,185,1],['Workers','Labour',1242,185,1],['AI','Service',736,385,0]].forEach(([nm,role,cx,cy,live],i)=>{
+      const dl=150+i*120;
+      el('rect',{x:cx-105,y:cy-38,width:210,height:76,fill:live?'#f2f2f0':'#000',stroke:live?'none':'#5a5a58','stroke-width':1.4,class:'fadein',style:`--d:${dl}`},am);
+      txt(am,cx,cy+2,nm,'nm '+(live?'k':'w')+' fadein',{'text-anchor':'middle',style:`--d:${dl+80}`});
+      txt(am,cx,cy+24,role,(live?'k':'')+' fadein',{'text-anchor':'middle',style:`--d:${dl+80}`})});
+    el('line',{x1:40,y1:462,x2:90,y2:462,stroke:'#f2f2f0','stroke-width':2,class:'fadein',style:'--d:3000'},am);
+    txt(am,102,467,'Life sets the rhythm','n w fadein',{style:'--d:3000'});
+    el('line',{x1:340,y1:462,x2:390,y2:462,stroke:'#8c8c88','stroke-width':1.4,'stroke-dasharray':'5 6',class:'fadein',style:'--d:3100'},am);
+    txt(am,402,467,'The AI serves it','n fadein',{style:'--d:3100'});
+  }
+
+  /* new line after each full stop */
+  stage.querySelectorAll('.big,.huge,.sub').forEach(e=>{e.innerHTML=e.innerHTML.replace(/\.\s+(?=[A-Z<])/g,'.<br>')});
+
+  /* ——— navigation ——— */
+  let k=-1;
+  const cbr=document.getElementById('cbr'),bar=document.getElementById('bar');
+  function go(nk){nk=Math.max(0,Math.min(N-1,nk));if(nk===k)return;
+    if(steps[k])steps[k].classList.remove('on');k=nk;void steps[k].offsetWidth;steps[k].classList.add('on');
+    cbr.innerHTML=`${pad(k+1)}<br>/ ${pad(N)}`;bar.style.width=((k+1)/N*100)+'%';
+    paintSpiral(k);if(G)G.set(S[k][3]);else{gsvg.setAttribute('class','');gfade.classList.remove('on')}
+    document.getElementById('coverimg').style.opacity=k===0?1:0;document.getElementById('backimg').style.opacity=k===N-1?1:0;
+    try{history.replaceState(null,'','#s'+(k+1))}catch(e){}}
+  const m=/^#s(\d+)$/.exec(location.hash);
+  [cur,trace,dia].forEach(e=>e.style.transition='none');
+  go(m?+m[1]-1:0);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>[cur,trace,dia].forEach(e=>e.style.transition='')));
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(k+1)}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(k-1)}
+    else if(e.key==='Home')go(0);else if(e.key==='End')go(N-1);
+    else if(e.key==='f'||e.key==='F'){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(_){}}
+  });
+  stage.addEventListener('click',e=>{if(e.target.closest('a'))return;const r=stage.getBoundingClientRect();(e.clientX-r.left)<r.width/3?go(k-1):go(k+1)});
+  let tx=null;
+  addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40)go(k+(dx<0?1:-1));tx=null});
+  const fit=()=>stage.style.setProperty('--s',Math.max(.1,Math.min((innerWidth-32)/1600,(innerHeight-60)/900)));
+  addEventListener('resize',fit);fit();
+})();
+</script>
+
+
+</body></html>
